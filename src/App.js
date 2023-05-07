@@ -1,50 +1,47 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import styled from "styled-components";
-import { useDispatch } from "react-redux";
 import NavBar from "./components/NavBar";
-import Login from "./components/Login";
-import MainLayout from "./hoc/MainLayout";
-import Product from "./pages/Products/Product";
+import { useDispatch, useSelector } from "react-redux";
 
-const Container = styled.div`
-  margin: 0;
-  width: 100%;
-  height: calc(100vh - 90px);
-  ${'' /* ${mobile({ height: `calc(200vh)` })} */}
-`;
+import Login from "./components/Auth/Login"
+import Register from "./components/Auth/Register"
+import Products from "./components/home/Products";
+import MainLayout from "./hoc/mainLayout";
 
-const Wrapper = styled.div`
-  width: 90vw;
-  height: 100%;
-  margin: 20px auto;
-  ${'' /* padding: 20px; */}
-  border-radius: 25px;
-  ${'' /* background-color: #444444; */}
-  display: flex;
-  ${'' /* ${mobile({ flexDirection: "column-reverse" })} */}
-
-`;
+import { isLoggedIn } from "./store/actions/users_actions";
+import { Loader } from "./utils/Loader";
 
 
 function App() {
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const users = useSelector(state => state.user);
+
+  useEffect(()=>{
+    dispatch(isLoggedIn()); 
+  },[dispatch])
+
+  useEffect(()=> {
+    if(users && users.auth !==null){
+      setLoading(false);
+    }
+  },[users])
 
   return (
     <div style={{background: "white"}}>
       <BrowserRouter>
         <NavBar />
-        <MainLayout>
-          <Container>
-            <Wrapper>
-              <Routes>
-                <Route active exact path="/login" element={<Login />} />
-                {/* {notLogout ? <Redirect to="/dashboard" /> : <></>} */}
-                {/* <Route active exact path="/signup" element={<SignUp />} /> */}
-                <Route active exact path="/product" element={<Product />} />
-              </Routes>
-            </Wrapper>
-          </Container>
-        </MainLayout>
+        { loading ? <Loader active={loading}/> : 
+          <MainLayout>
+            <Routes>
+              <Route active exact path="/login" element={<Login />} />
+              <Route active exact path="/register" element={<Register />} />
+              {/* {notLogout ? <Redirect to="/dashboard" /> : <></>} */}
+              {/* <Route active exact path="/signup" element={<SignUp />} /> */}
+              <Route active exact path="/product" element={<Products />} />
+            </Routes>
+          </MainLayout>  
+        }
       </BrowserRouter>
     </div>
   );

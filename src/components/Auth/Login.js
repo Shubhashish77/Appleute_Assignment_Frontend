@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import styled from "styled-components";
-import Cookies from 'js-cookie';
 import { useSelector, useDispatch } from "react-redux";
-import { loginUser } from "../store/actions/user_actions";
-import { Navigate } from "react-router-dom";
+import { loginUser } from "../../store/actions/users_actions";
 
 const Container = styled.div`
     width: 360px;
-    padding: 8% 0 0;
+    ${'' /* padding: 8% 0 0; */}
     margin: auto;
     font-family: 'Comfortaa', cursive;
     background: linear - gradient(90deg, #4b6cb7 0 %, #182848 100 %);
@@ -86,15 +84,21 @@ const schema = Yup.object().shape({
         .min(8, "Password must be at least 8 characters"),
 });
 
-function App() {
-    const users = useSelector(state => state.users);
+const Login = ()  => {
+    const users = useSelector(state => state.user);
+    const notification = useSelector(state => state.user)
     // const [isAuthenticated, setIsAuthenticated] = useState(false);
     const dispatch = useDispatch();
-    useEffect(()=>{
-      if(users && users.users)  
-        localStorage.setItem("user", users.users.status);
-        // setIsAuthenticated(true)
-    }, [users])
+    // useEffect(() => {
+    //     if (users && users.users)
+    //         localStorage.setItem("user", users.users.status);
+    //     // setIsAuthenticated(true)
+    // }, [users])
+
+    // useEffect(()=>{
+    //   if(notification && notification.success)
+    //     props.history.push('/products') 
+    // }, [props.history, notification])
     console.log("login", users.users);
     return (
         <>
@@ -124,7 +128,6 @@ function App() {
                                     onBlur={handleBlur}
                                     value={values.email}
                                     placeholder="Enter email id / username"
-                                    // className="form-control inp_text"
                                     id="email"
                                 />
                                 <Error>
@@ -137,7 +140,6 @@ function App() {
                                     onBlur={handleBlur}
                                     value={values.password}
                                     placeholder="Enter password"
-                                    // className="form-control"
                                 />
                                 <Error>
                                     {errors.password && touched.password && errors.password}
@@ -153,4 +155,4 @@ function App() {
     );
 }
 
-export default App;
+export default Login;

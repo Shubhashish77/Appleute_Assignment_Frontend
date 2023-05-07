@@ -8,19 +8,18 @@ import { Badge } from '@mui/material';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { showToast } from '../utils/tools';
 import {clearNotification} from '../store/actions/index'
-import { logoutUser } from '../store/actions/user_actions';
+import { logoutUser } from '../store/actions/users_actions';
 // import { mobile } from '../responsive';
 
 
 const Container = styled.div`
-  width: 90%;
+  width: 100vw;
   height: 70px;
   display:flex;
   background-color: #21262D;
   margin: 0 auto;
-  border-bottom-right-radius: 25px;
-  border-bottom-left-radius: 25px;
-  padding: 0 10px;
+  border-bottom: 5px solid black;
+  border-radius: 25px 10px;
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5); 
   &:hover {
     box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.5);
@@ -33,16 +32,14 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  ${'' /* background-color: red; */}
 `;
 
 const Left = styled.h1`
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
   color: white;
-  margin-left: 20px;
+  padding-left: 50px;
   ${'' /* ${mobile({ marginLeft: "10px" })} */}
 `;
 
@@ -57,10 +54,12 @@ const Image = styled.img`
 `;
 
 const Right = styled.div`
-  flex: 2;
+  flex: 3;
   display: flex;
+  flex-direction: row-reverse;
   align-items: center;
-  justify-content: center;
+  padding-right: 40px;
+  ${'' /* justify-content: center; */}
 `;
 
 const MenuItem = styled.div`
@@ -68,7 +67,7 @@ const MenuItem = styled.div`
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
-  margin-left: 25px; 
+  margin-left: 15px; 
   color: white;
   padding: 8px;
   border-radius: 25px;
@@ -79,8 +78,8 @@ const MenuItem = styled.div`
 `;
 const NavBar = () => {
   const notification = useSelector(state => state.notification);
+  const users = useSelector(state => state.user);
   const dispatch = useDispatch();
-  const [loginStatus, setLoginStatus] = useState(localStorage.getItem("user") === "success" ? true :false);
 
   useEffect(()=>{
     if(notification && notification.error){
@@ -97,8 +96,6 @@ const NavBar = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    localStorage.setItem("user", "fail");
-    setLoginStatus(false);
   }
     return (
         <Container>
@@ -108,18 +105,18 @@ const NavBar = () => {
                 </Left>
                 <Right>
                   {
-                    loginStatus ? 
+                    users && users.auth ? 
                     <>
-                      <MenuItem>
-                        <DropDown />
+                      <MenuItem onClick={handleLogout}>
+                        logout
                       </MenuItem>
                       <MenuItem>
                         <Badge badgeContent={4} color="primary">
                           <ShoppingCartIcon />
                         </Badge>
                       </MenuItem>
-                      <MenuItem onClick={handleLogout}>
-                        logout
+                      <MenuItem>
+                        <DropDown />
                       </MenuItem>
                     </> : 
                     <>

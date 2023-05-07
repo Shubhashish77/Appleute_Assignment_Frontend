@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-
+import cookie from 'react-cookies';
 
 export const showToast = (type, msg) => {
     switch(type){
@@ -17,3 +17,7 @@ export const showToast = (type, msg) => {
             return false;        
     }
 }
+
+export const getTokenCookie = () => cookie.load('jwt_');
+export const removeTokenCookie = () => cookie.remove('jwt_');
+export const getAuthHeaders = { headers: { 'jwt_': getTokenCookie() }};
